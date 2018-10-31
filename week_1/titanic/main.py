@@ -1,4 +1,6 @@
 import pandas
+import re
+import pdb
 
 data = pandas.read_csv(
     '/Users/markfrost/learn/course_machine_learning/week_1/titanic/data/train.csv', index_col='PassengerId')
@@ -22,9 +24,8 @@ print("survived: %(survived_percent)s " % locals())
 
 print('================= task 3')
 
-
 percent_first_class = round(data['Pclass'].value_counts()[
-                            2] / data['Pclass'].count() * 100, 2)
+                            1] / data['Pclass'].count() * 100, 2)
 
 print("first class percent: %(percent_first_class)s " % locals())
 
@@ -46,19 +47,18 @@ print('================= task 6')
 
 
 def sanitize(full_name):
-    return full_name.split(' ')[2].replace('(', '').replace(')', '')
+    matched = re.search(r'\((\w*)', full_name)
+    name = ''
+    if re.search(r'\((\w*)', full_name) is not None:
+        name = matched[1]
+    else:
+        name = full_name.split(' ')[2].replace('(', '').replace(')', '')
+    return name
 
 
-data['Name'] = data.where(
-    data['Sex'] == 'female').dropna()['Name'].apply(sanitize)
+data = data.loc[
+    data['Sex'] == 'female']
 
-print(data)
-# print(data.where(data['Sex'] == 'female').dropna())
-# female_first_names = list(
-#     map(
-#         lambda name: name.split(' ')[2].replace(
-#             '(', '').replace(')', ''), data.where(data['Sex'] == 'female').dropna()['Name']
-#     )
-# )
 
-# print(female_first_names)
+data['Name'] = data['Name'].apply(sanitize)
+print(data.agg(lambda x: x.value_counts().index[0]))

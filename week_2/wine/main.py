@@ -19,7 +19,6 @@ X_scaled = scale(X)
 
 kf = KFold(n_splits=5, shuffle=True, random_state=42)
 
-svc = svm.SVC(C=1, kernel='linear')
 result = []
 for n in range(2, 51):
     neigh = KNeighborsClassifier(n_neighbors=n)
